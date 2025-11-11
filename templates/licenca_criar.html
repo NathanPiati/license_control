@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Criar Licença{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Criar Nova Licença</h2>
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="cliente" class="form-label">Cliente</label>
+      <select name="cliente_id" class="form-select" required>
+    <option value="">Selecione um cliente</option>
+    {% for c in clientes %}
+        <option value="{{ c.id }}">{{ c.nome_completo }}{% if c.email %} ({{ c.email }}){% endif %}</option>
+    {% endfor %}
+</select>
+
+    </div>
+
+    <div class="mb-3">
+      <label for="data_inicio" class="form-label">Data de Início</label>
+      <input type="date" id="data_inicio" name="data_inicio" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label for="data_fim" class="form-label">Data de Fim</label>
+      <input type="date" id="data_fim" name="data_fim" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label for="max_devices" class="form-label">Máximo de Dispositivos</label>
+      <input type="number" id="max_devices" name="max_devices" class="form-control" value="1">
+    </div>
+
+    <div class="mb-3">
+      <label for="used_devices" class="form-label">Dispositivos em Uso</label>
+      <input type="number" id="used_devices" name="used_devices" class="form-control" value="0">
+    </div>
+
+    <div class="form-check mb-3">
+      <input type="checkbox" id="is_active" name="is_active" class="form-check-input" checked>
+      <label for="is_active" class="form-check-label">Licença Ativa</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar Licença</button>
+  </form>
+</div>
+{% endblock %}

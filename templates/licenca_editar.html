@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Editar Licença{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">Editar Licença #{{ licenca.id }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Cliente -->
+                        <div class="mb-3">
+                            <label class="form-label">Cliente <span class="text-danger">*</span></label>
+                            <select name="cliente_id" class="form-select" required>
+                                <option value="">Selecione um cliente</option>
+                                {% for c in clientes %}
+                                <option value="{{ c.id }}" {% if c.id == licenca.cliente.id %}selected{% endif %}>
+                                    {{ c.nome_completo }} {% if c.email %}({{ c.email }}){% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Chave (somente leitura) -->
+                        <div class="mb-3">
+                            <label class="form-label">Chave de Licença</label>
+                            <input type="text" class="form-control" value="{{ licenca.key }}" readonly>
+                        </div>
+
+                        <!-- Data Início -->
+                        <div class="mb-3">
+                            <label class="form-label">Data de Início</label>
+                            <input type="datetime-local" name="data_inicio" class="form-control"
+                                   value="{{ licenca.data_inicio|date:'Y-m-d\TH:i' }}" required>
+                        </div>
+
+                        <!-- Data Fim -->
+                        <div class="mb-3">
+                            <label class="form-label">Data de Fim</label>
+                            <input type="datetime-local" name="data_fim" class="form-control"
+                                   value="{% if licenca.data_fim %}{{ licenca.data_fim|date:'Y-m-d\TH:i' }}{% endif %}">
+                            <small class="text-muted">Deixe vazio para +365 dias a partir do início</small>
+                        </div>
+
+                        <!-- Máximo de Dispositivos -->
+                        <div class="mb-3">
+                            <label class="form-label">Máx. Dispositivos</label>
+                            <input type="number" name="max_devices" class="form-control" min="1" value="{{ licenca.max_devices }}" required>
+                        </div>
+
+                        <!-- Dispositivos Usados -->
+                        <div class="mb-3">
+                            <label class="form-label">Dispositivos Usados</label>
+                            <input type="number" name="used_devices" class="form-control" min="0" value="{{ licenca.used_devices }}" required>
+                            <small class="text-muted">Máximo: {{ licenca.max_devices }}</small>
+                        </div>
+
+                        <!-- Licença Ativa -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="is_active" class="form-check-input" id="is_active" {% if licenca.is_active %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active">Licença Ativa</label>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'admin_licensas' %}" class="btn btn-secondary me-md-2">Cancelar</a>
+                            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
