@@ -364,3 +364,26 @@ def verificar_licenca(request):
         "validade": validade_str,
         "nome_cliente": licenca.cliente.nome_completo if licenca.cliente else ""
     })
+
+
+
+@api_view(['POST'])
+def registrar_uso(request):
+    cliente = request.data.get('cliente')
+    chave = request.data.get('chave')
+    if not cliente or not chave:
+        return Response({"status": "erro", "mensagem": "Faltam dados"}, status=400)
+    
+    try:
+        licenca = License.objects.get(cliente=cliente, chave=chave)
+        licenca.used_devices += 1
+        licenca.save()
+        return Response({
+            "status": "sucesso",
+            "used_devices": licenca.used_devices
+        })
+    except License.DoesNotExist:
+        return Response({
+            "status": "erro",
+            "mensagem": "Licença inválida"
+        }, status=404)

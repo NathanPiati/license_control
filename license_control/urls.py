@@ -48,6 +48,8 @@ urlpatterns = [
     path('licencas/desativar/<int:pk>/', views.desativar_licenca, name='desativar_licenca'),
     path('licencas/excluir/<int:pk>/', views.excluir_licenca, name='excluir_licenca'),
 
+    path('api/registrar_uso/', views.registrar_uso, name='registrar_uso'),
+
 ]
 
 
